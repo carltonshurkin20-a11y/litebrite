@@ -63,6 +63,24 @@ document.addEventListener("mouseup", function () {
     isMouseDown = false;
 });
 
+board.addEventListener("touchstart", function (event) {
+    isMouseDown = true;
+    event.preventDefault();
+});
+
+document.addEventListener("touchend", function () {
+    isMouseDown = false;
+});
+
+board.addEventListener("touchmove", function (event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+
+    if (target && target.parentElement === board) {
+        target.dispatchEvent(new Event("mouseenter"));
+    }
+});
 // Create 400 Lite-Brite holes
 for (let i = 0; i < 400; i++) {
 
