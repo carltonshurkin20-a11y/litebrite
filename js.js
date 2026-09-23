@@ -549,7 +549,7 @@ palette.appendChild(smileyButton);
 // BOARD SIZE
 // -------------------------
 
-const boardSizes = [10, 15, 20, 25, 30];
+const boardSizes = [10, 15, 20, 25, 30,50];
 
 // clicking this opens / closes the size choices, like a dropdown
 const sizeToggle = document.createElement("button");
