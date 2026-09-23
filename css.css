@@ -69,7 +69,8 @@ body {
     padding: 15px;
     background-color: #222;
     border-radius: 12px;
-  
+    align-items: center;
+
     position: absolute;
     right: 20px;
     top: 20px;
@@ -81,6 +82,29 @@ body {
     border-radius: 50%;
     border: 3px solid #444;
     cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    user-select: none;
+}
+
+.sizetoggle {
+    background-color: #333;
+    color: #fff;
+    border: 3px solid #444;
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+/* hides the size circles when the dropdown is closed */
+.rightpalette.collapsed > div {
+    display: none;
 }
 
 .rightpalette > div.selected {
@@ -106,6 +130,29 @@ body {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        
+
+    }
+
+    /* keeps the board inside the 90vw instead of 90vw + border + padding */
+    #div {
+        box-sizing: border-box;
+    }
+
+    /* 25x25 and 30x30 boards: thinner rings so the holes stay visible */
+    #div.dense {
+        gap: 2px;
+    }
+
+    #div.dense > div {
+        border-width: 1px;
+    }
+
+    /* put the size picker under the board instead of on top of the palette */
+    .rightpalette {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
     }
 }

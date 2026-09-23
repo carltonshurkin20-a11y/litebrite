@@ -107,10 +107,31 @@ board.addEventListener("touchmove", function (event) {
 
 
 // -------------------------
-// CREATE 400 LITE-BRITE HOLES
+// CREATE THE LITE-BRITE HOLES
 // -------------------------
 
-for (let i = 0; i < 400; i++) {
+// how many holes across (and down) the board is
+let boardSize = 20;
+
+function buildBoard(size) {
+
+    boardSize = size;
+
+    // remove the old holes
+    board.innerHTML = "";
+
+    board.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+    board.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+
+    // big boards get thinner rings so the holes fit on a phone
+    board.classList.toggle("dense", size >= 25);
+
+    for (let i = 0; i < size * size; i++) {
+        createHole();
+    }
+}
+
+function createHole() {
 
     const hole = document.createElement("div");
 
@@ -158,6 +179,8 @@ for (let i = 0; i < 400; i++) {
 
     board.appendChild(hole);
 }
+
+buildBoard(boardSize);
 
 
 // -------------------------
@@ -293,9 +316,21 @@ smileyButton.addEventListener("click", function () {
 
         // Helper function
 
+        // the smiley is drawn for a 20x20 board,
+        // so on bigger boards shift it to the middle
+        const offset = Math.floor((boardSize - 20) / 2);
+
         function colorDot(row, column, color) {
 
-            const index = row * 20 + column;
+            row = row + offset;
+            column = column + offset;
+
+            // skip dots that would land off the board
+            if (row < 0 || row >= boardSize || column < 0 || column >= boardSize) {
+                return;
+            }
+
+            const index = row * boardSize + column;
 
             holes[index].style.backgroundColor = color;
 
@@ -508,6 +543,97 @@ smileyButton.addEventListener("click", function () {
 
 
 palette.appendChild(smileyButton);
+
+
+// -------------------------
+// BOARD SIZE
+// -------------------------
+
+const boardSizes = [10, 15, 20, 25, 30];
+
+// clicking this opens / closes the size choices, like a dropdown
+const sizeToggle = document.createElement("button");
+sizeToggle.classList.add("sizetoggle");
+rightPalette.appendChild(sizeToggle);
+
+// start tucked away
+rightPalette.classList.add("collapsed");
+
+function updateSizeToggle() {
+
+    if (rightPalette.classList.contains("collapsed")) {
+        sizeToggle.textContent = `Size ${boardSize} ▾`;
+    } else {
+        sizeToggle.textContent = `Size ${boardSize} ▴`;
+    }
+}
+
+sizeToggle.addEventListener("click", function () {
+
+    rightPalette.classList.toggle("collapsed");
+    updateSizeToggle();
+});
+
+updateSizeToggle();
+
+boardSizes.forEach(function (size) {
+
+    const sizeButton = document.createElement("div");
+
+    sizeButton.textContent = size;
+    sizeButton.title = `${size} × ${size}`;
+
+    if (size === boardSize) {
+        sizeButton.classList.add("selected");
+    }
+
+    sizeButton.addEventListener("click", function () {
+
+        // stop disco and smiley so they don't keep
+        // using the old holes
+        if (discoInterval !== null) {
+            clearInterval(discoInterval);
+            discoInterval = null;
+            discoButton.innerHTML = '<img src=" images/discoBall.png" width="50" style="border-radius: 20px;">';
+        }
+        if (smileyInterval !== null) {
+            clearInterval(smileyInterval);
+            smileyInterval = null;
+            smileyButton.innerHTML =
+                '<img src="images/Screenshot 2026-09-22 212213.png" width="50" style="border-radius: 20px;">';
+        }
+
+        buildBoard(size);
+
+        document.querySelectorAll("#rightdiv > div").forEach(function (s) {
+            s.classList.remove("selected");
+        });
+
+        sizeButton.classList.add("selected");
+
+        updateSmileyButton();
+
+        // tuck the choices away again after picking one
+        rightPalette.classList.add("collapsed");
+        updateSizeToggle();
+    });
+
+    rightPalette.appendChild(sizeButton);
+});
+
+// the smiley face needs at least a 20x20 board to fit
+function updateSmileyButton() {
+
+    if (boardSize < 20) {
+        smileyButton.disabled = true;
+        smileyButton.style.opacity = "0.4";
+        smileyButton.title = "Smiley needs a 20 × 20 board or bigger";
+    } else {
+        smileyButton.disabled = false;
+        smileyButton.style.opacity = "";
+        smileyButton.title = "";
+    }
+}
 
 
 // -------------------------
