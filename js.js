@@ -1,6 +1,7 @@
 
 const board = document.getElementById("div");
 const palette = document.getElementById("palette");
+const rightPalette = document.getElementById("rightdiv");
 
 const colors = [
     "red",
@@ -519,7 +520,7 @@ discoButton.style.borderRadius = "20px";
 
 clearButton.style.borderRadius = "20px";
 
-
+ 
 
 
 
